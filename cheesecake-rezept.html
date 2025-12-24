@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erdbeer Cheesecake - Bake It</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #d1415f; --light-pink: #ffdae0; --soft-bg: #fffafa; }
+        body { margin: 0; padding: 0; font-family: 'Arial', sans-serif; background: #fff5f7; color: #444; overflow-x: hidden; }
+        h1, h2, h3 { font-family: "Sour Gummy", sans-serif; color: #5d1a2a; text-align: center; }
+
+        /* GLITZER CURSOR */
+        .sparkle { position: absolute; background-color: var(--accent); border-radius: 50%; width: 6px; height: 6px; pointer-events: none; animation: fadeAndMove 1s forwards ease-out; z-index: 9999; }
+        @keyframes fadeAndMove { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0); } }
+
+        /* LAYOUT */
+        .nav-simple { padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; background: white; border-bottom: 2px solid var(--light-pink); }
+        .nav-simple img { height: 50px; }
+        .back-link { text-decoration: none; color: var(--accent); font-family: 'Sour Gummy'; font-size: 1.2rem; }
+        
+        .recipe-container { max-width: 900px; margin: 30px auto; background: white; border-radius: 40px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05); overflow: hidden; position: relative; }
+        .recipe-header-img { width: 100%; height: 400px; object-fit: cover; }
+        .recipe-content { padding: 40px; }
+        .recipe-title { font-size: 50px; color: var(--accent); margin: 0; text-align: center; }
+        
+        /* DRUCK BUTTON */
+        .print-btn { background: white; border: 2px solid #ffc0cb; border-radius: 50px; padding: 10px 25px; cursor: pointer; font-family: 'Sour Gummy'; color: #d1415f; margin: 20px auto; display: block; transition: 0.3s; }
+        .print-btn:hover { background: #fff5f7; transform: scale(1.05); }
+
+        .recipe-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 30px; }
+        @media (max-width: 800px) { .recipe-grid { grid-template-columns: 1fr; } }
+
+        .ingredients { background: var(--soft-bg); padding: 25px; border-radius: 20px; border: 1px dashed #ffc0cb; }
+        .step { display: flex; gap: 15px; margin-bottom: 20px; }
+        .step-number { background: var(--accent); color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+
+        /* INTERACTION & STERNE */
+        .interaction-section { border-top: 2px solid #fff5f7; padding: 40px; }
+        .star-rating { font-size: 2.5rem; color: #ccc; cursor: pointer; display: flex; justify-content: center; gap: 8px; margin: 15px 0; }
+        .star-rating .active { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        textarea { width: 100%; height: 100px; border-radius: 20px; border: 1px solid #ffc0cb; padding: 15px; margin: 10px 0; resize: none; box-sizing: border-box; font-size: 1rem; }
+        
+        .btn-send { background: var(--accent); color: white; border: none; padding: 15px 30px; border-radius: 50px; cursor: pointer; font-family: 'Sour Gummy'; width: 100%; font-size: 1.3rem; transition: 0.3s; }
+        .btn-send:hover { background: #b0354e; }
+
+        /* KOMMENTAR KARTEN */
+        .comment-card { background: #fffafa; padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #ffc0cb; position: relative; animation: slideIn 0.4s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .delete-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #ffc0cb; cursor: pointer; font-size: 1.3rem; }
+        .delete-btn:hover { color: var(--accent); }
+        .comment-stars { color: #ffd700; font-size: 1.1rem; margin-bottom: 8px; }
+
+        /* KONFETTI */
+        .confetti-piece { position: fixed; width: 10px; height: 10px; z-index: 15000; pointer-events: none; animation: fall 3s linear forwards; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+
+        /* DRUCK-LOGIK (A4 FIX) */
+        @media print {
+            .nav-simple, .back-link, .sparkle, .print-btn, .interaction-section, #finish-btn, input[type=checkbox], #slider-container {
+                display: none !important;
+            }
+            body { background: white !important; }
+            .recipe-container { display: block !important; box-shadow: none !important; margin: 0 !important; width: 100% !important; border-radius: 0 !important; }
+            .recipe-grid { display: block !important; }
+            .ingredients { background: white !important; border: 1px solid #eee !important; margin-bottom: 20px; }
+            .recipe-header-img { max-height: 250px !important; }
+            h1, h2, h3 { color: black !important; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="nav-simple">
+        <a href="index.html"><img src="img/logo.png" alt="Logo"></a>
+        <a href="index.html" class="back-link">← Zurück</a>
+    </nav>
+
+    <div class="recipe-container">
+        <img src="img/cheescake.png" class="recipe-header-img">
+        <div class="recipe-content">
+            <h1 class="recipe-title">Erdbeer Cheesecake</h1>
+            
+            <button onclick="window.print()" class="print-btn">🖨️ Rezept drucken (A4)</button>
+
+            <div class="recipe-grid">
+                <div class="ingredients">
+                    <h3>🎂 Zutaten</h3>
+                    <p><strong>Boden:</strong></p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><input type="checkbox"> 200g Butterkekse</li>
+                        <li><input type="checkbox"> 125g Butter</li>
+                    </ul>
+                    <p><strong>Creme:</strong></p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><input type="checkbox"> 200g Frischkäse</li>
+                        <li><input type="checkbox"> 250g Mascarpone</li>
+                        <li><input type="checkbox"> 150g Naturjoghurt</li>
+                        <li><input type="checkbox"> 120g Puderzucker</li>
+                        <li><input type="checkbox"> 1 Pck. Vanillezucker</li>
+                        <li><input type="checkbox"> 1 TL Zitronenabrieb</li>
+                    </ul>
+                    <p><strong>Topping:</strong></p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li><input type="checkbox"> 400g Erdbeeren</li>
+                        <li><input type="checkbox"> 1 Pck. Tortenguss (rot)</li>
+                        <li><input type="checkbox"> 250ml Wasser</li>
+                    </ul>
+                </div>
+                <div class="instructions">
+                    <h3>Zubereitung</h3>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div>Butter schmelzen. Kekse fein mahlen und mit der Butter vermischen. In eine Springform (Ø 22 cm) drücken und glatt streichen.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>Frischkäse, Mascarpone, Joghurt, Zucker und Zitronenabrieb kurz verrühren (nicht zu lang!). Auf dem Boden verteilen und 2 Std. kühlen.</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>Erdbeeren in Scheiben schneiden, kreisförmig auflegen. Tortenguss nach Packungsanleitung zubereiten und vorsichtig darüber geben. Fest werden lassen.</div>
+                    </div>
+                    <button id="finish-btn" onclick="celebrate(250)" class="btn-send">Fertig & Genießen! 🎉</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-section">
+            <h3>Deine Bewertung</h3>
+            
+            <div class="star-rating" id="rating-input">
+                <span onclick="setRating(1)">★</span><span onclick="setRating(2)">★</span><span onclick="setRating(3)">★</span><span onclick="setRating(4)">★</span><span onclick="setRating(5)">★</span>
+            </div>
+
+            <textarea id="comment-text" placeholder="Wie ist dein Erdbeer Cheesecake geworden?"></textarea>
+            <button class="btn-send" onclick="sendComment()">Kommentar speichern </button>
+            
+            <div id="comments-list" style="margin-top: 30px;"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentRating = 0;
+
+        window.onload = () => { loadComments(); };
+
+        document.onmousemove = (e) => {
+            let s = document.createElement('i'); s.className = 'sparkle';
+            s.style.left = e.pageX + 'px'; s.style.top = e.pageY + 'px';
+            s.style.setProperty('--x', (Math.random() - 0.5) * 80 + 'px');
+            s.style.setProperty('--y', (Math.random() - 0.5) * 80 + 'px');
+            document.body.appendChild(s); setTimeout(() => s.remove(), 1000);
+        };
+
+        function setRating(n) {
+            currentRating = n;
+            const stars = document.getElementById('rating-input').children;
+            for(let i=0; i<5; i++) {
+                stars[i].className = i < n ? 'active' : '';
+            }
+        }
+
+        function sendComment() {
+            const txt = document.getElementById('comment-text');
+            if (txt.value.trim() === "" || currentRating === 0) {
+                alert("Bitte gib eine Sterne-Bewertung ab und schreib einen Text! ⭐");
+                return;
+            }
+
+            const newComment = {
+                id: Date.now(),
+                text: txt.value,
+                rating: currentRating,
+                date: new Date().toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' })
+            };
+
+            let comments = JSON.parse(localStorage.getItem('muffinData')) || [];
+            comments.push(newComment);
+            localStorage.setItem('muffinData', JSON.stringify(comments));
+
+            addCommentToDOM(newComment);
+            celebrate(100);
+
+            txt.value = "";
+            setRating(0);
+        }
+
+        function addCommentToDOM(comment) {
+            const div = document.createElement('div');
+            div.className = 'comment-card';
+            div.id = `comment-${comment.id}`;
+            
+            let starsHtml = "";
+            for(let i=0; i<5; i++) starsHtml += i < comment.rating ? "★" : "☆";
+
+            div.innerHTML = `
+                <button class="delete-btn" title="Löschen" onclick="deleteComment(${comment.id})">🗑️</button>
+                <div class="comment-stars">${starsHtml}</div>
+                <small>${comment.date}</small>
+                <p style="margin: 8px 0 0 0; font-weight: bold;">"${comment.text}"</p>
+            `;
+            document.getElementById('comments-list').prepend(div);
+        }
+
+        function loadComments() {
+            const comments = JSON.parse(localStorage.getItem('muffinData')) || [];
+            comments.forEach(c => addCommentToDOM(c));
+        }
+
+        function deleteComment(id) {
+            if(confirm("Möchtest du diesen Kommentar wirklich löschen?")) {
+                let comments = JSON.parse(localStorage.getItem('muffinData')) || [];
+                comments = comments.filter(c => c.id !== id);
+                localStorage.setItem('muffinData', JSON.stringify(comments));
+                document.getElementById(`comment-${id}`).remove();
+            }
+        }
+
+        function celebrate(amount) {
+            const colors = ['#ffc0cb', '#d1415f', '#ffd700', '#ffffff', '#4ecdc4'];
+            for (let i = 0; i < amount; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti-piece';
+                c.style.left = Math.random() * 100 + 'vw';
+                c.style.top = '-20px';
+                c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                c.style.width = Math.random() * 12 + 5 + 'px';
+                c.style.height = c.style.width;
+                c.style.animationDuration = Math.random() * 2 + 1.5 + 's';
+                if (Math.random() > 0.5) c.style.borderRadius = '50%';
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 3500);
+            }
+        }
+    </script>
+</body>
+</html>

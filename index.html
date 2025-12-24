@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bake It - Deine Bakery</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ALLGEMEIN */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Sour Gummy", sans-serif;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* MAGIC CURSOR GLITZER */
+        .sparkle {
+            position: absolute;
+            background-color: #ffc0cb; /* Rosa Glitzer */
+            border-radius: 50%;
+            width: 8px;
+            height: 8px;
+            opacity: 0;
+            pointer-events: none;
+            animation: fadeAndMove 1s forwards ease-out;
+            z-index: 9999;
+        }
+
+        @keyframes fadeAndMove {
+            0% { opacity: 1; transform: translate(0, 0) scale(1); }
+            100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0); }
+        }
+
+        /* HERO BEREICH */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            background: black;
+        }
+
+        .header-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5);
+            transform: scale(1.1);
+            transition: transform 0.1s ease-out;
+            display: block;
+        }
+
+        /* NAVIGATION */
+        .container {
+            position: absolute;
+            right: 32px;
+            left: 32px;
+            top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .container img {
+            height: 120px; 
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .container img:hover {
+            transform: scale(1.05);
+        }
+
+        .menu-link {
+            text-decoration: none;
+            color: white;
+            margin-left: 25px;
+            font-size: 18px;
+        }
+
+        .menu-link:hover { text-decoration: underline; }
+
+        /* HERO TEXT MITTIG */
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            z-index: 50;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            will-change: transform;
+            transition: transform 0.1s ease-out;
+        }
+
+        .headline {
+            color: #ffc0cb;
+            font-size: 100px;
+            margin: 0;
+            text-shadow: 5px 5px 15px rgba(0, 0, 0, 0.8);
+            line-height: 1.1;
+        }
+
+        .headline2 {
+            color: white;
+            font-size: 28px;
+            margin: 15px 0;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .description-section {
+            color: white;
+            font-size: 18px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 8px rgba(0, 0, 0, 0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* SURPRISE BUTTON STYLE */
+        .btn-surprise {
+            margin-top: 25px;
+            padding: 15px 35px;
+            font-family: 'Sour Gummy', sans-serif;
+            font-size: 22px;
+            background-color: #ffc0cb;
+            color: #5d1a2a;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 101;
+            position: relative;
+        }
+
+        .btn-surprise:hover {
+            transform: scale(1.1) rotate(-3deg);
+            background-color: white;
+            box-shadow: 0 8px 25px rgba(255, 192, 203, 0.6);
+        }
+
+        /* REZEPT CARDS SEKTION */
+        .recipe-section {
+            padding: 80px 20px;
+            background-color: #fff5f7;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 42px;
+            color: #5d1a2a;
+            margin-bottom: 50px;
+        }
+
+        .card-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .recipe-card {
+            background: white;
+            width: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: left;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 20px;
+        }
+
+        .card-title {
+            color: white;
+            margin: 0;
+            font-size: 26px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
+
+        .card-text {
+            padding: 20px;
+            color: #444;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 60px;
+        }
+
+        .card-actions {
+            padding: 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .btn-card {
+            color: #d1415f;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .btn-card:hover { color: #ffc0cb; }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero-section">
+        <img class="header-image" src="img/background.png" alt="Hintergrund" />
+
+        <div class="container">
+            <a href="index.html"><img src="img/logo.png" alt="Logo" /></a>
+            <nav>
+                <a class="menu-link" href="index.html">Home</a>
+                <a class="menu-link" href="#rezepte">Rezepte</a>
+                <a class="menu-link" href="#">Kontakt</a>
+                <a class="menu-link" href="#">Impressum</a>
+            </nav>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="headline">BAKE IT</h1>
+            <h2 class="headline2">Backe die Welt ein kleines Stück süßer.</h2>
+            <div class="description-section">
+                Willkommen in meiner rosa Backwelt! 
+                Hier findest du alles, was dein Herz begehrt.
+            </div>
+            <button onclick="surpriseMe()" class="btn-surprise">✨ Überrasch mich!</button>
+        </div>
+    </div>
+
+    <section class="recipe-section" id="rezepte">
+        <h2 class="section-title">Meine Top 3 Rezepte</h2>
+        <div class="card-wrapper">
+            
+            <div class="recipe-card">
+                <div class="card-image" style="background-image: linear-gradient(to top, rgba(0,0,0,0.6), transparent), url('img/muffins.png');">
+                    <h3 class="card-title">Erdbeer Muffins</h3>
+                </div>
+                <div class="card-text">Ein saftiger Erdbeertraum mit einer leichten Mascarpone-Creme.</div>
+                <div class="card-actions">
+                    <a href="muffins-rezept.html" class="btn-card">Rezept lesen</a>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="card-image" style="background-image: linear-gradient(to top, rgba(0,0,0,0.6), transparent), url('img/chocolate-cookies.png');">
+                    <h3 class="card-title">Choco Cookies</h3>
+                </div>
+                <div class="card-text">Extra schokoladig mit großen Stücken und weichem Kern.</div>
+                <div class="card-actions">
+                    <a href="cookies-rezept.html" class="btn-card">Rezept lesen</a>
+                </div>
+            </div>
+
+            <div class="recipe-card">
+                <div class="card-image" style="background-image: linear-gradient(to top, rgba(0,0,0,0.6), transparent), url('img/cheescake.png');">
+                    <h3 class="card-title">Raspberry Cheesecake</h3>
+                </div>
+                <div class="card-text">Cremig weiß mit fruchtigem Himbeerspiegel oben drauf.</div>
+                <div class="card-actions">
+                    <a href="cheesecake-rezept.html" class="btn-card">Rezept lesen</a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // ÜBERRASCHUNGS-LOGIK
+        function surpriseMe() {
+            const rezepte = [
+                'muffins-rezept.html',
+                'cookies-rezept.html',
+                'cheesecake-rezept.html'
+            ];
+            const zufall = Math.floor(Math.random() * rezepte.length);
+            window.location.href = rezepte[zufall];
+        }
+
+        document.addEventListener("mousemove", function(e) {
+            // PARALLAX EFFEKT
+            const x = (e.clientX / window.innerWidth) - 0.5;
+            const y = (e.clientY / window.innerHeight) - 0.5;
+
+            const bg = document.querySelector(".header-image");
+            if(bg) bg.style.transform = `scale(1.1) translate(${x * -20}px, ${y * -20}px)`;
+
+            const content = document.querySelector(".hero-content");
+            if(content) content.style.transform = `translate(calc(-50% + ${x * 60}px), calc(-50% + ${y * 60}px))`;
+
+            // MAGIC GLITZER CURSOR
+            let spark = document.createElement('i');
+            spark.classList.add('sparkle');
+            spark.style.left = (e.pageX) + 'px';
+            spark.style.top = (e.pageY) + 'px';
+            
+            spark.style.scale = Math.random() * 0.8 + 0.2;
+            spark.style.setProperty('--x', (Math.random() - 0.5) * 100 + 'px');
+            spark.style.setProperty('--y', (Math.random() - 0.5) * 100 + 'px');
+
+            document.body.appendChild(spark);
+
+            setTimeout(() => {
+                spark.remove();
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
